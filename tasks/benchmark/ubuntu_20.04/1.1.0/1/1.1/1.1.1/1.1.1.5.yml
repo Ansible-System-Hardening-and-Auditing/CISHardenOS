@@ -1,0 +1,33 @@
+---
+- name: "Assess: {{ checkref_1_1_1_5 }} {{ check_1_1_1_5 }} | configuration"
+  when:
+    - CISBenchUbuntu_1_1_1_5 | bool
+  shell: "{{ assess_1_1_1_5_line }}"
+  failed_when: false
+  changed_when: false
+  register: audit_1_1_1_5_assess
+
+- name: "Remediate: {{ checkref_1_1_1_5 }} {{ check_1_1_1_5 }} | configuration"
+  when:
+    - CISBenchUbuntu_1_1_1_5 | bool
+    - CISBenchUbuntu_Remediate | bool
+    - calculate_1_1_1_5_assess | length == 0
+  lineinfile:
+    path: "{{ remediate_1_1_1_5_path }}"
+    line: "{{ remediate_1_1_1_5_line }}"
+    owner: root
+    group: root
+    mode: "0640"
+    create: yes
+  register: remediate_1_1_1_5_config_file
+
+- name: "Audit: {{ checkref_1_1_1_5 }} {{ check_1_1_1_5 }} | report"
+  when: CISBenchUbuntu_1_1_1_5 | bool
+  include_tasks: AUDIT.yml
+  vars:
+    checkref: "{{ checkref_1_1_1_5 | default('') }}"
+    checktitle: "{{ check_1_1_1_5 | default('') }}"
+    checkresult: "{{ audit_1_1_1_5 | default('') }}"
+    evidence: "{{ audit_1_1_1_5_evidence | default('') }}"
+    remediation: "{{ audit_1_1_1_5_remediation | default('') }}"
+    remediationperformed: "{{ audit_1_1_1_5_remediationperformed | default('') }}"

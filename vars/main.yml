@@ -1,0 +1,13 @@
+---
+AUDIT_STANZA: |-
+  {
+    "DocumentName": {{ CISBenchmarkDocumentName | trim | to_json }}{{- "," -}}
+    "DocumentVersion": {{ CISBenchmarkDocumentVersion | trim | to_json }}{{- "," -}}
+    "Context": {{ context | default('system') | trim | to_json }}{{- "," -}}
+    "CheckRef": {{ checkref | trim | to_json }}{{- "," -}}
+    "CheckTitle": {{ checktitle | trim | to_json }}{{- "," -}}
+    "CheckResult": {{ checkresult | trim | to_json }}{%- if evidence | default("") | trim | length > 0 -%}{{- "," -}}
+    "Evidence": {{ evidence | trim | to_json }}{%- endif -%}{%- if remediation | default("") | trim | length > 0 -%}{{- "," -}}
+    "Remediation": {{ remediation | trim | to_json }}{%- endif -%}{%- if remediationperformed | default("") | trim | length > 0 -%}{{- "," -}}
+    "RemediationPerformed": {{ remediationperformed | trim | to_json }}{%- endif -%}
+  }

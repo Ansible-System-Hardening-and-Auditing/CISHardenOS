@@ -1,0 +1,10 @@
+---
+- name: "Result: {{ checkref }} {{ checktitle }} | record"
+  set_fact:
+    AUDITS: |
+      [
+        {%- for AUDIT in AUDITS | default([]) -%}
+          {{ AUDIT }},
+        {%- endfor -%}
+        {{ AUDIT_STANZA }}
+      ]

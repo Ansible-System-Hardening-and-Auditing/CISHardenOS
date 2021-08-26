@@ -1,0 +1,36 @@
+---
+checkref_1_1_1_2: "1.1.1.2"
+check_1_1_1_2: Ensure mounting of freevxfs filesystems is disabled (Automated)
+
+assess_1_1_1_2_line: lsmod | grep freevxfs
+calculate_1_1_1_2_assess: "{{ audit_1_1_1_2_assess.stdout | default('') | trim }}"
+
+remediate_1_1_1_2_path: /etc/modprobe.d/freevxfs.conf
+remediate_1_1_1_2_line: install freevxfs /bin/true
+
+audit_1_1_1_2: |-
+  {%- if calculate_1_1_1_2_assess | length == 0 -%}
+    Passed
+  {%- elif CISBenchUbuntu_Remediate | bool -%}
+    {%- if remediate_1_1_1_2_config_file.changed -%}
+      Remediated
+    {%- else -%}
+      Remediation applied, awaiting reboot
+    {%- endif -%}
+  {%- else -%}
+    Failed
+  {%- endif -%}
+audit_1_1_1_2_evidence: |-
+  {%- if calculate_1_1_1_2_assess | length == 0 -%}
+    `{{ assess_1_1_1_2_line }}` returned an empty string.
+  {%- else -%}
+    `{{ assess_1_1_1_2_line }}` returned `{{ calculate_1_1_1_2_assess }}`.
+  {%- endif -%}
+audit_1_1_1_2_remediation: |-
+  {%- if calculate_1_1_1_2_assess | length > 0 and not CISBenchUbuntu_Remediate | bool -%}
+    Add the line `{{ remediate_1_1_1_2_line }}` to `{{ remediate_1_1_1_2_path }}`.
+  {%- endif -%}
+audit_1_1_1_2_remediationperformed: |-
+  {%- if calculate_1_1_1_2_assess | length > 0 and CISBenchUbuntu_Remediate | bool -%}
+    The line `{{ remediate_1_1_1_2_line }}` was added to `{{ remediate_1_1_1_2_path }}`.
+  {%- endif -%}

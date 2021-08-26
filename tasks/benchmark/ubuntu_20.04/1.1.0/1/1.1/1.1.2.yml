@@ -1,0 +1,35 @@
+---
+- name: "Assess: {{ checkref_1_1_2 }} {{ check_1_1_2 }} | configuration"
+  when:
+    - CISBenchUbuntu_1_1_2 | bool
+  shell: "{{ assess_1_1_2_line }}"
+  failed_when: false
+  changed_when: false
+  register: audit_1_1_2_assess
+
+- name: "Remediate: {{ checkref_1_1_2 }} {{ check_1_1_2 }} | configuration"
+  when:
+    - CISBenchUbuntu_1_1_2 | bool
+    - CISBenchUbuntu_Remediate | bool
+    - calculate_1_1_2_assess | length == 0
+  copy:
+    dest: "{{ remediate_1_1_2_path }}"
+    src: "{{ remediate_1_1_2_source }}"
+    owner: root
+    group: root
+    mode: "0644"
+  register: remediate_1_1_2_config_file
+  notify:
+  - Execute systemctl daemon-reload
+  - "Remediate: {{ checkref_1_1_2 }} {{ check_1_1_2 }} | execute"
+
+- name: "Audit: {{ checkref_1_1_2 }} {{ check_1_1_2 }} | report"
+  when: CISBenchUbuntu_1_1_2 | bool
+  include_tasks: AUDIT.yml
+  vars:
+    checkref: "{{ checkref_1_1_2 | default('') }}"
+    checktitle: "{{ check_1_1_2 | default('') }}"
+    checkresult: "{{ audit_1_1_2 | default('') }}"
+    evidence: "{{ audit_1_1_2_evidence | default('') }}"
+    remediation: "{{ audit_1_1_2_remediation | default('') }}"
+    remediationperformed: "{{ audit_1_1_2_remediationperformed | default('') }}"

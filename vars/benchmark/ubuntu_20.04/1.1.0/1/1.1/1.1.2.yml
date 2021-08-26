@@ -1,0 +1,34 @@
+---
+checkref_1_1_2: "1.1.2"
+check_1_1_2: Ensure /tmp is configured (Automated)
+
+assess_1_1_2_line: findmnt -n /tmp
+calculate_1_1_2_assess: "{{ audit_1_1_2_assess.stdout | default('') | regex_replace('^\r?\n$', '') | trim }}"
+
+remediate_1_1_2_path: /etc/systemd/system/tmp.mount
+remediate_1_1_2_source: files/1.1.2/tmp.mount
+
+audit_1_1_2: |-
+  {%- if calculate_1_1_2_assess | length > 0 -%}
+    Passed
+  {%- elif CISBenchUbuntu_Remediate | bool -%}
+    {%- if remediate_1_1_2_config_file.changed -%}
+      Remediated
+    {%- endif -%}
+  {%- else -%}
+    Failed
+  {%- endif -%}
+audit_1_1_2_evidence: |-
+  {%- if calculate_1_1_2_assess | length == 0 -%}
+    `{{ assess_1_1_2_line }}` returned an empty string.
+  {%- else -%}
+    `{{ assess_1_1_2_line }}` returned `{{ calculate_1_1_2_assess }}`.
+  {%- endif -%}
+audit_1_1_2_remediation: |-
+  {%- if calculate_1_1_2_assess | length == 0 and not CISBenchUbuntu_Remediate | bool -%}
+    You should ensure that /tmp is a separate volume, mounted with noexec. Please see the benchmark for more detailed recommendations.
+  {%- endif -%}
+audit_1_1_2_remediationperformed: |-
+  {%- if calculate_1_1_2_assess | length == 0 and CISBenchUbuntu_Remediate | bool -%}
+    A volume mount has been added in `{{ remediate_1_1_2_path }}` and applied.
+  {%- endif -%}

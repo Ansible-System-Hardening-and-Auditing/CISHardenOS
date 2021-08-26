@@ -1,0 +1,4 @@
+---
+CISBenchmarkDocumentName: CIS Ubuntu 20.04 LTS Benchmark
+CISBenchmarkDocumentVersion: 1.1.0
+CISBenchmarkPath: "benchmark/ubuntu_20.04/{{ CISBenchmarkDocumentVersion }}"

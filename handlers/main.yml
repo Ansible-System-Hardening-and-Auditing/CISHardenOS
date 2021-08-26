@@ -1,0 +1,10 @@
+---
+- name: Execute systemctl daemon-reload
+  systemd:
+    daemon_reload: true
+
+- name: "Remediate: {{ checkref_1_1_2 }} {{ check_1_1_2 }} | execute"
+  systemd:
+    name: tmp.mount
+    state: started
+    enabled: true
